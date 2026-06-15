@@ -9,18 +9,20 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class VisaApplication {
+public class Interview {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long visaApplicationId;
+    private Long interviewId;
 
     @ManyToOne
     private Applicant applicant;
 
     @ManyToOne
-    private ImmigrationOfficer handlingOfficer;
+    private ImmigrationOfficer officer;
 
-    private String visaType;
+    private String interviewDate;
+
     private String status;
-    private String officerNotes;
+
+    private String purpose;
 }
