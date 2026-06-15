@@ -3,9 +3,12 @@ package com.example.Immigration.Management.System.RESTful.API.Services;
 import com.example.Immigration.Management.System.RESTful.API.Entities.Applicant;
 import com.example.Immigration.Management.System.RESTful.API.Entities.Interview;
 import com.example.Immigration.Management.System.RESTful.API.Repositries.ApplicantRepository;
+import com.example.Immigration.Management.System.RESTful.API.Repositries.InterviewRepository;
 import org.springframework.beans.factory.annotation.Autowire;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class ApplicantService {
@@ -16,12 +19,14 @@ public class ApplicantService {
         this.applicantRepository = applicantRepository;
     }
 
-    Interview interview;
+    InterviewRepository interviewRepository;
+
+    public ApplicantService(InterviewRepository interviewRepository) {
+        this.interviewRepository = interviewRepository;
+    }
 
     @Autowired
-    public ApplicantService(Interview interview) {
-        this.interview = interview;
-    }
+
 
     //save applicant
     public Applicant saveApplicant(Applicant applicant) throws Exception{
@@ -53,5 +58,30 @@ public class ApplicantService {
         return applicantRepository.save(applicant);
     }
 
+    public String flagCriminalRecord(Long applicantId) throws Exception{
+        Applicant applicant = applicantRepository.getById(applicantId);
 
+        if (applicantId == null) {
+            throw new Exception("Invalid ID");
+        }
+        if (applicant.getApplicantId() == null){
+            throw new Exception("Applicant not found");
+        }
+
+        applicant.setCriminalRecord(true);
+        applicantRepository.save(applicant);
+
+        //cancel interview
+        List<Interview> interviews = interviewRepository.findByOfficerId(applicantId);
+        for (Interview interview : interviews) {
+            if (interview.getStatus().equals("SCHEDULED")){
+                interview.getStatus().equals("CANCELLED");
+            }
+        }
+
+        interviewRepository.saveAll(interviews);
+
+        return "Applicant flagged and interviews cancelled";
+
+    }
 }
