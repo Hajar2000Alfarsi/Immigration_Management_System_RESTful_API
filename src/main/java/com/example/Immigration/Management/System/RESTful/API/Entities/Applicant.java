@@ -16,7 +16,7 @@ import java.util.List;
 public class Applicant extends Person{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long applicantId;
+    private Long applicantId;
 
 
     private String passportNumber;

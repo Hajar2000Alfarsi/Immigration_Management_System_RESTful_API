@@ -14,7 +14,7 @@ import java.util.List;
 public class ImmigrationOfficer extends Person{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long ImmigrationOfficerId;
+    private Long ImmigrationOfficerId;
 
     private String badgeNumber;
     private String rank;
