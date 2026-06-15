@@ -16,17 +16,17 @@ import java.util.List;
 public class Applicant extends Person{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private long applicantId;
 
 
     private String passportNumber;
     private String nationality;
     private boolean criminalRecord;
 
-    @OneToMany
+    @OneToMany(mappedBy = "applicant")
     private List<VisaApplication> visaApplication;
 
-    @OneToMany
+    @OneToMany(mappedBy = "applicant")
     private List<Interviews> interviews;
 
 }
