@@ -13,20 +13,13 @@ import java.util.List;
 @Service
 public class ApplicantService {
     ApplicantRepository applicantRepository;
-
-    @Autowired
-    public ApplicantService(ApplicantRepository applicantRepository) {
-        this.applicantRepository = applicantRepository;
-    }
-
     InterviewRepository interviewRepository;
 
-    public ApplicantService(InterviewRepository interviewRepository) {
+    @Autowired
+    public ApplicantService(ApplicantRepository applicantRepository, InterviewRepository interviewRepository) {
+        this.applicantRepository = applicantRepository;
         this.interviewRepository = interviewRepository;
     }
-
-    @Autowired
-
 
     //save applicant
     public Applicant saveApplicant(Applicant applicant) throws Exception{
