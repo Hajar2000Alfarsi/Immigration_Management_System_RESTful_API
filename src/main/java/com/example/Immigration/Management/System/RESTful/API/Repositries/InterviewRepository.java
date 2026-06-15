@@ -9,9 +9,9 @@ import java.util.Date;
 import java.util.List;
 
 public interface InterviewRepository extends JpaRepository<Interview, Long> {
-    @Query("select i from Interview i where i.officerId =:oId AND i.interviewDate=:date")
+    @Query("select i from Interview i where i.officer.ImmigrationOfficerId =:oId AND i.interviewDate=:date")
     List<Interview> findByOfficerIdAndInterviewDate(
-            @Param("oId") Long interviewId,
+            @Param("oId") Long ImmigrationOfficerId,
             @Param("date") String interviewDate
             );
 }

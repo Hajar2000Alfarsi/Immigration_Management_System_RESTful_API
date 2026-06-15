@@ -1,5 +1,6 @@
 package com.example.Immigration.Management.System.RESTful.API.Entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,9 +16,11 @@ public class Interview {
     private Long interviewId;
 
     @ManyToOne
+    @JsonIgnore
     private Applicant applicant;
 
     @ManyToOne
+    @JsonIgnore
     private ImmigrationOfficer officer;
 
     private String interviewDate;

@@ -1,5 +1,6 @@
 package com.example.Immigration.Management.System.RESTful.API.Entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,6 +22,6 @@ public class ImmigrationCenter {
     private String type;
     private int dailyCapacity;
 
-    @OneToMany(mappedBy = "center")
+    @OneToMany
     private List<ImmigrationOfficer> officers;
 }
