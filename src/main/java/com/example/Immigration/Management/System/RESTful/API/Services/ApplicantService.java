@@ -2,6 +2,7 @@ package com.example.Immigration.Management.System.RESTful.API.Services;
 
 import com.example.Immigration.Management.System.RESTful.API.Entities.Applicant;
 import com.example.Immigration.Management.System.RESTful.API.Entities.Interview;
+import com.example.Immigration.Management.System.RESTful.API.Exception.ApplicantException;
 import com.example.Immigration.Management.System.RESTful.API.Repositries.ApplicantRepository;
 import com.example.Immigration.Management.System.RESTful.API.Repositries.InterviewRepository;
 import org.springframework.beans.factory.annotation.Autowire;
@@ -24,13 +25,13 @@ public class ApplicantService {
     //save applicant
     public Applicant saveApplicant(Applicant applicant) throws Exception{
         if (applicant.getPassportNumber() == null || applicant.getPassportNumber().isEmpty()) {
-            throw new Exception("Invalid passport number");
+            throw ApplicantException.invalidPassport();
         }
         if (applicant.getFirstName() == null || applicant.getLastName() == null) {
-            throw new Exception("First and Last name required");
+            throw ApplicantException.nameNotFound();
         }
         if (applicant.getNationality() == null) {
-            throw new Exception("Nationality required");
+            throw ApplicantException.nationalityNotFound();
         }
 
         applicant.setCriminalRecord(false);
@@ -55,10 +56,10 @@ public class ApplicantService {
         Applicant applicant = applicantRepository.getById(applicantId);
 
         if (applicantId == null) {
-            throw new Exception("Invalid ID");
+            throw ApplicantException.idNotFound();
         }
         if (applicant.getApplicantId() == null){
-            throw new Exception("Applicant not found");
+            throw ApplicantException.invalidId(applicantId);
         }
 
         applicant.setCriminalRecord(true);
