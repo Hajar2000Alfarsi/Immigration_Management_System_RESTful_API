@@ -3,6 +3,7 @@ package com.example.Immigration.Management.System.RESTful.API.Services;
 import com.example.Immigration.Management.System.RESTful.API.DTO.OfficerDTO;
 import com.example.Immigration.Management.System.RESTful.API.Entities.ImmigrationCenter;
 import com.example.Immigration.Management.System.RESTful.API.Entities.ImmigrationOfficer;
+import com.example.Immigration.Management.System.RESTful.API.Exception.CenterException;
 import com.example.Immigration.Management.System.RESTful.API.Exception.OfficerException;
 import com.example.Immigration.Management.System.RESTful.API.Repositries.CenterRepository;
 import com.example.Immigration.Management.System.RESTful.API.Repositries.OfficerRepository;
@@ -29,11 +30,8 @@ public class OfficerService {
             throw OfficerException.invalidClearance();
         }
 
-        ImmigrationOfficer officer = officerRepository.getById(officerId);
-
-        if (officer.getImmigrationOfficerId() == null) {
-            throw OfficerException.IdNotFound(officerId);
-        }
+        ImmigrationOfficer officer = officerRepository.findById(officerId)
+                        .orElseThrow(() -> OfficerException.IdNotFound(officerId));
 
         officer.setOfficerRank(newRank);
         officer.setClearanceLevel(newClearanceLevel);
@@ -45,7 +43,7 @@ public class OfficerService {
         ImmigrationOfficer officer = officerRepository.findById(officerId).orElseThrow(()->
                 OfficerException.IdNotFound(officerId));
         ImmigrationCenter center = centerRepository.findById(newCenterId).orElseThrow(()->
-                new RuntimeException("Center not found"));
+                CenterException.IdNotFound(newCenterId));
 
         officer.setCenter(center);
 
