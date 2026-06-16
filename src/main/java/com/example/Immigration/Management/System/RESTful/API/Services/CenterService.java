@@ -1,5 +1,6 @@
 package com.example.Immigration.Management.System.RESTful.API.Services;
 
+import com.example.Immigration.Management.System.RESTful.API.DTO.CenterDTO;
 import com.example.Immigration.Management.System.RESTful.API.Entities.ImmigrationCenter;
 import com.example.Immigration.Management.System.RESTful.API.Exception.CenterException;
 import com.example.Immigration.Management.System.RESTful.API.Repositries.CenterRepository;
@@ -16,15 +17,24 @@ public class CenterService {
         this.centerRepository = centerRepository;
     }
 
-    public ImmigrationCenter createCenter(ImmigrationCenter center) {
-        if (center.getImmigrationCenterId() == null){
+    public CenterDTO createCenter(CenterDTO dto) {
+        if (dto.getName() == null || dto.getName().isEmpty()) {
             throw CenterException.nameMissing();
         }
-        return centerRepository.save(center);
+        ImmigrationCenter center = new ImmigrationCenter();
+
+        center.setName(dto.getName());
+        center.setLocationCountry(dto.getLocationCountry());
+        center.setType(dto.getType());
+        center.setDailyCapacity(dto.getDailyCapacity());
+
+
+        return CenterDTO.convertToDTO(centerRepository.save(center));
     }
 
-    public ImmigrationCenter getCenterById(Long id) {
-        return  centerRepository.findById(id).orElseThrow(()->
-                CenterException.IdNotFound(id));
+    public CenterDTO getCenterById(Long id) {
+        ImmigrationCenter center = centerRepository.findById(id).orElseThrow(()->
+                        CenterException.IdNotFound(id));
+        return CenterDTO.convertToDTO(center);
     }
 }
