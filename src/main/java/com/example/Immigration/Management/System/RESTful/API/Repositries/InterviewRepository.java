@@ -15,6 +15,6 @@ public interface InterviewRepository extends JpaRepository<Interview, Long> {
             @Param("date") String interviewDate
             );
 
-    @Query("select i from Interview i where i.officer.ImmigrationOfficerId =:oId")
-    List<Interview> findByOfficerId(@Param("oId") Long ImmigrationOfficerId);
+    @Query("select i from Interview i where i.applicant.applicantId =:aId")
+    List<Interview> findByApplicantId(@Param("aId") Long applicantId);
 }

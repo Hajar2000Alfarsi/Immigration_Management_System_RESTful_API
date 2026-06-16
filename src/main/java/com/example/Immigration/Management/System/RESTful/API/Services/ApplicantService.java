@@ -1,5 +1,6 @@
 package com.example.Immigration.Management.System.RESTful.API.Services;
 
+import com.example.Immigration.Management.System.RESTful.API.DTO.ApplicantDTO;
 import com.example.Immigration.Management.System.RESTful.API.Entities.Applicant;
 import com.example.Immigration.Management.System.RESTful.API.Entities.Interview;
 import com.example.Immigration.Management.System.RESTful.API.Exception.ApplicantException;
@@ -22,7 +23,7 @@ public class ApplicantService {
     }
 
     //save applicant
-    public Applicant saveApplicant(Applicant applicant) throws Exception{
+    public ApplicantDTO saveApplicant(Applicant applicant) throws Exception{
         if (applicant.getPassportNumber() == null || applicant.getPassportNumber().isEmpty()) {
             throw ApplicantException.invalidPassport();
         }
@@ -34,11 +35,11 @@ public class ApplicantService {
         }
 
         applicant.setCriminalRecord(false);
-        return applicantRepository.save(applicant);
+        return ApplicantDTO.convertToDTO(applicantRepository.save(applicant));
     }
 
     //Overloaded save applicant
-    public Applicant saveApplicant(String firstName, String lastName, String passportNumber, String
+    public ApplicantDTO saveApplicant(String firstName, String lastName, String passportNumber, String
             nationality) {
         Applicant applicant = new Applicant();
 
@@ -48,33 +49,31 @@ public class ApplicantService {
         applicant.setNationality(nationality);
         applicant.setCriminalRecord(false);
 
-        return applicantRepository.save(applicant);
+        return ApplicantDTO.convertToDTO(applicantRepository.save(applicant));
     }
 
-    public String flagCriminalRecord(Long applicantId) throws Exception{
-        Applicant applicant = applicantRepository.getById(applicantId);
-
+    public ApplicantDTO flagCriminalRecord(Long applicantId){
         if (applicantId == null) {
             throw ApplicantException.idMissing();
         }
-        if (applicant.getApplicantId() == null){
-            throw ApplicantException.IdNotFound(applicantId);
-        }
+
+        Applicant applicant = applicantRepository.findById(applicantId).orElseThrow(()->
+                ApplicantException.IdNotFound(applicantId));
 
         applicant.setCriminalRecord(true);
-        applicantRepository.save(applicant);
+        Applicant savedApplicant = applicantRepository.save(applicant);
 
         //cancel interview
-        List<Interview> interviews = interviewRepository.findByOfficerId(applicantId);
+        List<Interview> interviews = interviewRepository.findByApplicantId(applicantId);
         for (Interview interview : interviews) {
-            if (interview.getStatus().equals("SCHEDULED")){
-                interview.getStatus().equals("CANCELLED");
+            if ("SCHEDULED".equals(interview.getStatus())){
+                interview.setStatus("CANCELLED");
             }
         }
 
         interviewRepository.saveAll(interviews);
 
-        return "Applicant flagged and interviews cancelled";
+        return ApplicantDTO.convertToDTO(savedApplicant);
 
     }
 }
