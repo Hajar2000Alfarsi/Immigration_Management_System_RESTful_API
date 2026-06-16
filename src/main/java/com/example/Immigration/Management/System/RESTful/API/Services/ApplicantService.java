@@ -5,7 +5,6 @@ import com.example.Immigration.Management.System.RESTful.API.Entities.Interview;
 import com.example.Immigration.Management.System.RESTful.API.Exception.ApplicantException;
 import com.example.Immigration.Management.System.RESTful.API.Repositries.ApplicantRepository;
 import com.example.Immigration.Management.System.RESTful.API.Repositries.InterviewRepository;
-import org.springframework.beans.factory.annotation.Autowire;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,10 +27,10 @@ public class ApplicantService {
             throw ApplicantException.invalidPassport();
         }
         if (applicant.getFirstName() == null || applicant.getLastName() == null) {
-            throw ApplicantException.nameNotFound();
+            throw ApplicantException.nameMissing();
         }
         if (applicant.getNationality() == null) {
-            throw ApplicantException.nationalityNotFound();
+            throw ApplicantException.nationalityMissing();
         }
 
         applicant.setCriminalRecord(false);
@@ -56,10 +55,10 @@ public class ApplicantService {
         Applicant applicant = applicantRepository.getById(applicantId);
 
         if (applicantId == null) {
-            throw ApplicantException.idNotFound();
+            throw ApplicantException.idMissing();
         }
         if (applicant.getApplicantId() == null){
-            throw ApplicantException.invalidId(applicantId);
+            throw ApplicantException.IdNotFound(applicantId);
         }
 
         applicant.setCriminalRecord(true);

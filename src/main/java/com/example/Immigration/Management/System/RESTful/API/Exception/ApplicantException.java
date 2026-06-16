@@ -15,27 +15,27 @@ public class ApplicantException extends RuntimeException{
         this.status = status;
     }
 
-    //ID Invalid
-    public static ApplicantException invalidId(Long id){
+    //ID not Found
+    public static ApplicantException IdNotFound(Long id){
         return new ApplicantException(
                 "Applicant with ID " + id + " was not found.",
                 HttpStatus.NOT_FOUND
         );
     }
 
-    //ID required
-    public static ApplicantException idNotFound(){
+    //ID missing
+    public static ApplicantException idMissing(){
         return new ApplicantException(
                 "Applicant Id Required",
-                HttpStatus.NOT_FOUND
+                HttpStatus.BAD_REQUEST
         );
     }
 
-    //First and Last name not found
-    public static ApplicantException nameNotFound(){
+    //First and Last name Missing
+    public static ApplicantException nameMissing(){
         return new ApplicantException(
                 "First and Last name required",
-                HttpStatus.NOT_FOUND
+                HttpStatus.BAD_REQUEST
         );
     }
 
@@ -47,11 +47,11 @@ public class ApplicantException extends RuntimeException{
         );
     }
 
-    //Nationality not found
-    public static ApplicantException nationalityNotFound(){
+    //Nationality missing
+    public static ApplicantException nationalityMissing(){
         return new ApplicantException(
                 "Nationality required",
-                HttpStatus.NOT_FOUND
+                HttpStatus.BAD_REQUEST
         );
     }
     //Bad Request
