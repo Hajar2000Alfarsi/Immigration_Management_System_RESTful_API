@@ -25,11 +25,13 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGlobalException(Exception ex, WebRequest request){
+        ex.printStackTrace();
+
         ErrorResponse errorResponse = new ErrorResponse(
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 HttpStatus.INTERNAL_SERVER_ERROR,
-                "Internal server error",
-                "Unexpected error occurred to the server",
+                ex.getMessage(),
+                ex.getClass().getName(),
                 request.getDescription(false).replace("uri=",""));
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
     }
@@ -43,10 +45,26 @@ public class GlobalExceptionHandler {
                 HttpStatus.BAD_REQUEST.value(),
                 HttpStatus.BAD_REQUEST,
                 ex.getMessage(),
-                "Not Found",
+                "Center Eroor",
                 request.getDescription(false).replace("uri=", "")
         );
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+    }
+
+    @ExceptionHandler(ApplicantException.class)
+    public ResponseEntity<ErrorResponse> handleApplicantException(
+            ApplicantException ex,
+            WebRequest request) {
+
+        ErrorResponse errorResponse = new ErrorResponse(
+                ex.getStatus().value(),
+                ex.getStatus(),
+                ex.getMessage(),
+                "Applicant Error",
+                request.getDescription(false).replace("uri=", "")
+        );
+
+        return ResponseEntity.status(ex.getStatus()).body(errorResponse);
     }
 }

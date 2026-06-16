@@ -22,7 +22,7 @@ public class Applicant extends Person{
 
     private String passportNumber;
     private String nationality;
-    private boolean criminalRecord;
+    private Boolean criminalRecord;
 
     @OneToMany
     private List<VisaApplication> visaApplication;

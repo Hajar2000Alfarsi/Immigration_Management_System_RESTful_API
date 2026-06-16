@@ -38,7 +38,7 @@ public class VisaApplicationService {
         visaApplication.setVisaType(visaType);
 
         //criminal record check
-        if (applicant.isCriminalRecord()){
+        if (applicant.getCriminalRecord()){
             visaApplication.setStatus("REJECTED");
             visaApplication.setOfficerNotes("Auto-rejected due to criminal flag.");
         } else {

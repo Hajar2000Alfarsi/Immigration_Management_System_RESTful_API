@@ -23,14 +23,15 @@ public class ApplicantService {
     }
 
     //save applicant
-    public ApplicantDTO saveApplicant(Applicant applicant) throws Exception{
-        if (applicant.getPassportNumber() == null || applicant.getPassportNumber().isEmpty()) {
+    public ApplicantDTO saveApplicant(Applicant applicant){
+        if (applicant.getPassportNumber() == null || applicant.getPassportNumber().trim().isEmpty()) {
             throw ApplicantException.invalidPassport();
         }
-        if (applicant.getFirstName() == null || applicant.getLastName() == null) {
+        if (applicant.getFirstName() == null || applicant.getFirstName().trim().isEmpty()
+                || applicant.getLastName() == null || applicant.getLastName().trim().isEmpty()) {
             throw ApplicantException.nameMissing();
         }
-        if (applicant.getNationality() == null) {
+        if (applicant.getNationality() == null || applicant.getNationality().trim().isEmpty()) {
             throw ApplicantException.nationalityMissing();
         }
 
@@ -75,5 +76,13 @@ public class ApplicantService {
 
         return ApplicantDTO.convertToDTO(savedApplicant);
 
+    }
+
+    public List<ApplicantDTO> getAll(){
+        return ApplicantDTO.convertToDTO(applicantRepository.findAll());
+    }
+
+    public List<ApplicantDTO> getByNationality(String nationality) {
+        return ApplicantDTO.convertToDTO(applicantRepository.findByNationality(nationality));
     }
 }
