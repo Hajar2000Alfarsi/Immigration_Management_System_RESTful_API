@@ -21,4 +21,21 @@ public class VisaApplicationException extends RuntimeException{
                 "Visa type Required",
                 HttpStatus.BAD_REQUEST);
     }
+
+    //ID not Found
+    public static VisaApplicationException IdNotFound(Long id){
+        return new VisaApplicationException(
+                "Visa Application with ID " + id + " was not found.",
+                HttpStatus.NOT_FOUND
+        );
+    }
+
+    //insufficient Clearance
+    public static VisaApplicationException insufficientClearance(String level){
+        return new VisaApplicationException(
+                "Clearance level " + level + " is not enough for Asylum visa (required: 4 or 5)",
+                HttpStatus.FORBIDDEN
+        );
+    }
+
 }
