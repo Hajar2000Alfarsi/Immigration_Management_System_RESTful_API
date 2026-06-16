@@ -38,4 +38,12 @@ public class VisaApplicationException extends RuntimeException{
         );
     }
 
+    //invalid status
+    public static VisaApplicationException invalidStatus() {
+        return new VisaApplicationException(
+                "Status must be APPROVED or REJECTED",
+                HttpStatus.BAD_REQUEST
+        );
+    }
+
 }

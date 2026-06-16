@@ -63,4 +63,18 @@ public class VisaApplicationService {
 
         return visaApplicationRepository.save(visaApplication);
     }
+
+    public VisaApplication processVisa(Long visaId, String newStatus, String notes) {
+        VisaApplication visa = visaApplicationRepository.findById(visaId).orElseThrow(()->
+                VisaApplicationException.IdNotFound(visaId));
+
+        if (!newStatus.equalsIgnoreCase("APPROVED") && !newStatus.equalsIgnoreCase("REJECTED")) {
+            throw VisaApplicationException.invalidStatus();
+        }
+
+        visa.setStatus(newStatus);
+        visa.setOfficerNotes(notes);
+
+        return visaApplicationRepository.save(visa);
+    }
 }
