@@ -15,12 +15,11 @@ public class OfficerService {
     CenterRepository centerRepository;
     OfficerRepository officerRepository;
 
+    @Autowired
     public OfficerService(CenterRepository centerRepository, OfficerRepository officerRepository) {
         this.centerRepository = centerRepository;
         this.officerRepository = officerRepository;
     }
-
-    @Autowired
 
 
     public ImmigrationOfficer promoteOfficer(Long officerId, String newRank, int newClearanceLevel) throws Exception{

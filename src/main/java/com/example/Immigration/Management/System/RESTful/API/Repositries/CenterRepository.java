@@ -7,6 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface CenterRepository extends JpaRepository<ImmigrationCenter, Long> {
-    @Query("select c from ImmigrationCenter c where c.ImmigrationCenterId=:oId")
-    ImmigrationCenter getById(@Param("oId") Long ImmigrationCenterId);
+    @Query("select c from ImmigrationCenter c where c.immigrationCenterId=:oId")
+    ImmigrationCenter getById(@Param("oId") Long immigrationCenterId);
 }
