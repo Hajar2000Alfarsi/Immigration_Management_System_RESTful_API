@@ -40,6 +40,14 @@ public class OfficerException extends RuntimeException{
         );
     }
 
+    //Badge Number missing
+    public static OfficerException badgeNumberMissing(){
+        return new OfficerException(
+                "Badge Number Required",
+                HttpStatus.BAD_REQUEST
+        );
+    }
+
     public HttpStatus getStatus() {
         return status;
     }

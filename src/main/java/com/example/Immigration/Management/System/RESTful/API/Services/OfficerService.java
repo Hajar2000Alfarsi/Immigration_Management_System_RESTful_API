@@ -1,5 +1,6 @@
 package com.example.Immigration.Management.System.RESTful.API.Services;
 
+import com.example.Immigration.Management.System.RESTful.API.DTO.OfficerDTO;
 import com.example.Immigration.Management.System.RESTful.API.Entities.ImmigrationCenter;
 import com.example.Immigration.Management.System.RESTful.API.Entities.ImmigrationOfficer;
 import com.example.Immigration.Management.System.RESTful.API.Exception.OfficerException;
@@ -23,7 +24,7 @@ public class OfficerService {
     }
 
 
-    public ImmigrationOfficer promoteOfficer(Long officerId, String newRank, int newClearanceLevel){
+    public OfficerDTO promoteOfficer(Long officerId, String newRank, int newClearanceLevel){
         if (newClearanceLevel < 1 || newClearanceLevel > 5) {
             throw OfficerException.invalidClearance();
         }
@@ -37,10 +38,10 @@ public class OfficerService {
         officer.setOfficerRank(newRank);
         officer.setClearanceLevel(newClearanceLevel);
 
-        return officerRepository.save(officer);
+        return OfficerDTO.convertToDTO(officerRepository.save(officer));
     }
 
-    public ImmigrationOfficer transferOfficer(Long officerId, Long newCenterId){
+    public OfficerDTO transferOfficer(Long officerId, Long newCenterId){
         ImmigrationOfficer officer = officerRepository.findById(officerId).orElseThrow(()->
                 OfficerException.IdNotFound(officerId));
         ImmigrationCenter center = centerRepository.findById(newCenterId).orElseThrow(()->
@@ -48,20 +49,20 @@ public class OfficerService {
 
         officer.setCenter(center);
 
-        return officerRepository.save(officer);
+        return OfficerDTO.convertToDTO(officerRepository.save(officer));
     }
 
     //Overloading method
 
-    public List<ImmigrationOfficer> findOfficersByRank(String rank){
+    public List<OfficerDTO> findOfficersByRank(String rank){
         if (rank == null) {
             throw OfficerException.rankMissing();
         }
-        return officerRepository.getByRank(rank);
+        return OfficerDTO.convertToDTO(officerRepository.getByRank(rank));
     }
 
-    public List<ImmigrationOfficer> findOfficersByRank(String rank, int minimumClearanceLevel)throws Exception{
-        if (rank == null)
+    public List<OfficerDTO> findOfficersByRank(String rank, int minimumClearanceLevel){
+        if (rank == null || rank.trim().isEmpty())
         {
             throw OfficerException.rankMissing();
         }
@@ -74,6 +75,27 @@ public class OfficerService {
             }
         }
 
-        return all;
+        return OfficerDTO.convertToDTO(filtred);
     }
+
+    public OfficerDTO saveOfficer(ImmigrationOfficer officer){
+
+        if(officer.getBadgeNumber() == null || officer.getBadgeNumber().trim().isEmpty()){
+
+            throw OfficerException.badgeNumberMissing();
+        }
+
+        officer.setActive(true);
+
+        return OfficerDTO.convertToDTO(officerRepository.save(officer));
+    }
+
+    public OfficerDTO getById(Long id){
+        ImmigrationOfficer officer =  officerRepository.findById(id)
+                        .orElseThrow(() -> OfficerException.IdNotFound(id));
+
+        return OfficerDTO.convertToDTO(officer);
+    }
+
+
 }
