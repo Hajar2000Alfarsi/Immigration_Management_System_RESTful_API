@@ -61,5 +61,8 @@ public class ApplicantException extends RuntimeException{
         );
     }
 
+    public HttpStatus getStatus() {
+        return status;
+    }
 
 }

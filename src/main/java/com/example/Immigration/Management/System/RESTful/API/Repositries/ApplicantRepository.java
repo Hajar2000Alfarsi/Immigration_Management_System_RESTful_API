@@ -13,5 +13,5 @@ public interface ApplicantRepository extends JpaRepository<Applicant,Long> {
     List<Applicant> findByNationality(@Param("nationality") String nationality);
 
     @Query("select a from Applicant a where a.applicantId=:aId")
-    List<Applicant> getById(@Param("aId") String applicantId);
+    Applicant getById(@Param("aId") Long applicantId);
 }

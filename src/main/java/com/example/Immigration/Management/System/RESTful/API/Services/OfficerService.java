@@ -2,6 +2,7 @@ package com.example.Immigration.Management.System.RESTful.API.Services;
 
 import com.example.Immigration.Management.System.RESTful.API.Entities.ImmigrationCenter;
 import com.example.Immigration.Management.System.RESTful.API.Entities.ImmigrationOfficer;
+import com.example.Immigration.Management.System.RESTful.API.Exception.OfficerException;
 import com.example.Immigration.Management.System.RESTful.API.Repositries.CenterRepository;
 import com.example.Immigration.Management.System.RESTful.API.Repositries.OfficerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,15 +23,15 @@ public class OfficerService {
     }
 
 
-    public ImmigrationOfficer promoteOfficer(Long officerId, String newRank, int newClearanceLevel) throws Exception{
+    public ImmigrationOfficer promoteOfficer(Long officerId, String newRank, int newClearanceLevel){
         if (newClearanceLevel < 1 || newClearanceLevel > 5) {
-            throw new Exception("Clearance must be 1-5");
+            throw OfficerException.invalidClearance();
         }
 
         ImmigrationOfficer officer = officerRepository.getById(officerId);
 
         if (officer.getImmigrationOfficerId() == null) {
-            throw new Exception("This officer ID not found");
+            throw OfficerException.IdNotFound(officerId);
         }
 
         officer.setOfficerRank(newRank);
@@ -40,8 +41,10 @@ public class OfficerService {
     }
 
     public ImmigrationOfficer transferOfficer(Long officerId, Long newCenterId){
-        ImmigrationOfficer officer = officerRepository.findById(officerId).orElseThrow(()-> new RuntimeException("Officer not found"));
-        ImmigrationCenter center = centerRepository.findById(newCenterId).orElseThrow(()->new RuntimeException("Center not found"));
+        ImmigrationOfficer officer = officerRepository.findById(officerId).orElseThrow(()->
+                OfficerException.IdNotFound(officerId));
+        ImmigrationCenter center = centerRepository.findById(newCenterId).orElseThrow(()->
+                new RuntimeException("Center not found"));
 
         officer.setCenter(center);
 
@@ -50,9 +53,9 @@ public class OfficerService {
 
     //Overloading method
 
-    public List<ImmigrationOfficer> findOfficersByRank(String rank) throws Exception{
+    public List<ImmigrationOfficer> findOfficersByRank(String rank){
         if (rank == null) {
-            throw new Exception("rank not found");
+            throw OfficerException.rankMissing();
         }
         return officerRepository.getByRank(rank);
     }
@@ -60,7 +63,7 @@ public class OfficerService {
     public List<ImmigrationOfficer> findOfficersByRank(String rank, int minimumClearanceLevel)throws Exception{
         if (rank == null)
         {
-            throw new Exception("Invalid data");
+            throw OfficerException.rankMissing();
         }
         List<ImmigrationOfficer> all = officerRepository.getByRank(rank);
         List<ImmigrationOfficer> filtred = new ArrayList<>();
