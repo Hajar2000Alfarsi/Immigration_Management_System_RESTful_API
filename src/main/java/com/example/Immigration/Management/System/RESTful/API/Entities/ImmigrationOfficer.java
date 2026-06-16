@@ -20,7 +20,7 @@ public class ImmigrationOfficer extends Person{
     private String badgeNumber;
     private String officerRank;
     private int clearanceLevel;
-    private boolean active;
+    private Boolean active;
 
     @ManyToOne
     private ImmigrationCenter  center;
