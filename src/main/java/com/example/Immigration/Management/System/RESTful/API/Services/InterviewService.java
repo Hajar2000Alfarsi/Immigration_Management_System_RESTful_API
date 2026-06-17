@@ -55,6 +55,7 @@ public class InterviewService {
                 InterviewException.IdNotFound(interviewId));
 
         interview.setStatus("COMPLETED");
+
         return InterviewDTO.convertToDTO(interviewRepository.save(interview));
     }
 
