@@ -1,5 +1,6 @@
 package com.example.Immigration.Management.System.RESTful.API.Services;
 
+import com.example.Immigration.Management.System.RESTful.API.DTO.InterviewDTO;
 import com.example.Immigration.Management.System.RESTful.API.Entities.Applicant;
 import com.example.Immigration.Management.System.RESTful.API.Entities.ImmigrationOfficer;
 import com.example.Immigration.Management.System.RESTful.API.Entities.Interview;
@@ -28,7 +29,7 @@ public class InterviewService {
         this.applicantRepository = applicantRepository;
     }
 
-    public Interview cheduleInterview(Long applicantId, Long officerId, String date){
+    public InterviewDTO scheduleInterview(Long applicantId, Long officerId, String date){
         Applicant applicant = applicantRepository.findById(applicantId).orElseThrow(()->
                 ApplicantException.IdNotFound(applicantId));
         ImmigrationOfficer officer = officerRepository.findById(officerId).orElseThrow(()->
@@ -46,14 +47,28 @@ public class InterviewService {
         interview.setInterviewDate(date);
         interview.setStatus("SCHEDULED");
 
-        return interviewRepository.save(interview);
+        return InterviewDTO.convertToDTO(interviewRepository.save(interview));
     }
 
-    public Interview completeInterview(Long interviewId){
+    public InterviewDTO completeInterview(Long interviewId){
         Interview interview = interviewRepository.findById(interviewId).orElseThrow(()->
                 InterviewException.IdNotFound(interviewId));
 
         interview.setStatus("COMPLETED");
-        return interviewRepository.save(interview);
+        return InterviewDTO.convertToDTO(interviewRepository.save(interview));
+    }
+
+    public InterviewDTO cancelInterview(Long interviewId) {
+
+        Interview interview = interviewRepository.findById(interviewId)
+                .orElseThrow(() -> InterviewException.IdNotFound(interviewId));
+
+        interview.setStatus("CANCELLED");
+
+        return InterviewDTO.convertToDTO(interviewRepository.save(interview));
+    }
+
+    public List<InterviewDTO> getOfficerSchedule(Long officerId, String date) {
+        return InterviewDTO.convertToDTO(interviewRepository.findByOfficerIdAndInterviewDate(officerId, date));
     }
 }
