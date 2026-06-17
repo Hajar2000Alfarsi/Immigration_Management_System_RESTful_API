@@ -67,4 +67,20 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(ex.getStatus()).body(errorResponse);
     }
+
+    @ExceptionHandler(VisaApplicationException.class)
+    public ResponseEntity<ErrorResponse> handleVisaException(VisaApplicationException ex, WebRequest request){
+
+        ErrorResponse errorResponse =
+                new ErrorResponse(
+                        ex.status.value(),
+                        ex.status,
+                        ex.getMessage(),
+                        "Visa Application Error",
+                        request.getDescription(false)
+                                .replace("uri=","")
+                );
+
+        return ResponseEntity.status(ex.status).body(errorResponse);
+    }
 }

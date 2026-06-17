@@ -1,5 +1,6 @@
 package com.example.Immigration.Management.System.RESTful.API.Services;
 
+import com.example.Immigration.Management.System.RESTful.API.DTO.VisaApplicationDTO;
 import com.example.Immigration.Management.System.RESTful.API.Entities.Applicant;
 import com.example.Immigration.Management.System.RESTful.API.Entities.ImmigrationOfficer;
 import com.example.Immigration.Management.System.RESTful.API.Entities.VisaApplication;
@@ -11,6 +12,8 @@ import com.example.Immigration.Management.System.RESTful.API.Repositries.Officer
 import com.example.Immigration.Management.System.RESTful.API.Repositries.VisaApplicationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class VisaApplicationService {
@@ -24,7 +27,7 @@ public class VisaApplicationService {
         this.officerRepository = officerRepository;
     }
 
-    public VisaApplication submitApplication(Long applicantId, String visaType){
+    public VisaApplicationDTO submitApplication(Long applicantId, String visaType){
         Applicant applicant = applicantRepository.findById(applicantId).orElseThrow(()->
         ApplicantException.IdNotFound(applicantId));
 
@@ -44,10 +47,10 @@ public class VisaApplicationService {
         } else {
             visaApplication.setStatus("PENDING");
         }
-        return visaApplicationRepository.save(visaApplication);
+        return VisaApplicationDTO.convertToDTO(visaApplicationRepository.save(visaApplication));
     }
 
-    public VisaApplication assignOfficer(Long visaId, Long officerId) {
+    public VisaApplicationDTO assignOfficer(Long visaId, Long officerId) {
         VisaApplication visaApplication = visaApplicationRepository.findById(visaId).orElseThrow(()->
                 VisaApplicationException.IdNotFound(visaId));
         ImmigrationOfficer immigrationOfficer = officerRepository.findById(officerId).orElseThrow(()->
@@ -61,10 +64,10 @@ public class VisaApplicationService {
         }
         visaApplication.setHandlingOfficer(immigrationOfficer);
 
-        return visaApplicationRepository.save(visaApplication);
+        return VisaApplicationDTO.convertToDTO(visaApplicationRepository.save(visaApplication));
     }
 
-    public VisaApplication processVisa(Long visaId, String newStatus, String notes) {
+    public VisaApplicationDTO processVisa(Long visaId, String newStatus, String notes) {
         VisaApplication visa = visaApplicationRepository.findById(visaId).orElseThrow(()->
                 VisaApplicationException.IdNotFound(visaId));
 
@@ -75,6 +78,19 @@ public class VisaApplicationService {
         visa.setStatus(newStatus);
         visa.setOfficerNotes(notes);
 
-        return visaApplicationRepository.save(visa);
+        return VisaApplicationDTO.convertToDTO(visaApplicationRepository.save(visa));
+    }
+
+    public List<VisaApplicationDTO> getApplicantVisas(Long applicantId){
+
+        applicantRepository.findById(applicantId).orElseThrow(() ->
+                ApplicantException.IdNotFound(applicantId));
+
+        return VisaApplicationDTO.convertToDTO(visaApplicationRepository.findByApplicantId(applicantId));
+    }
+
+    public List<VisaApplicationDTO> getByStatus(String status){
+
+        return VisaApplicationDTO.convertToDTO(visaApplicationRepository.findByStatus(status));
     }
 }
