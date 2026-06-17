@@ -22,6 +22,6 @@ public class ImmigrationCenter {
     private String type;
     private int dailyCapacity;
 
-    @OneToMany
+    @OneToMany(mappedBy = "center")
     private List<ImmigrationOfficer> officers;
 }

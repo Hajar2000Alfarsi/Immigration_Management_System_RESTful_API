@@ -14,6 +14,8 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+
+@Inheritance(strategy = InheritanceType.JOINED)
 public class Applicant extends Person{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,10 +26,10 @@ public class Applicant extends Person{
     private String nationality;
     private Boolean criminalRecord;
 
-    @OneToMany
+    @OneToMany(mappedBy = "applicant")
     private List<VisaApplication> visaApplication;
 
-    @OneToMany
+    @OneToMany(mappedBy = "applicant")
     private List<Interview> interviews;
 
 }
